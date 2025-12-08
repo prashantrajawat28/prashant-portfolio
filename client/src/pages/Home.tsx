@@ -6,21 +6,13 @@ import { Skills } from "@/components/Skills";
 import { Experience } from "@/components/Experience";
 import { Projects } from "@/components/Projects";
 import { Contact } from "@/components/Contact";
-import { BackgroundOrbs } from "@/components/BackgroundOrbs";
-import { motion, useScroll, useSpring } from "framer-motion";
 
 export default function Home() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
-  });
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      // Custom cursor logic could go here if implemented in CSS
+      if (!containerRef.current) return;
       const x = e.clientX;
       const y = e.clientY;
       document.documentElement.style.setProperty("--spotlight-x", `${x}px`);
@@ -32,18 +24,11 @@ export default function Home() {
   }, []);
 
   return (
-    <div ref={containerRef} className="min-h-screen text-foreground selection:bg-primary/20 relative">
-      {/* Scroll Progress Bar */}
-      <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-primary z-[100] origin-left"
-        style={{ scaleX }}
-      />
-
+    <div ref={containerRef} className="min-h-screen text-foreground selection:bg-primary/20">
       {/* Background Effects */}
       <div className="bg-grid" />
       <div className="bg-grain" />
       <div className="spotlight" />
-      <BackgroundOrbs />
 
       <Sidebar />
       
@@ -56,7 +41,7 @@ export default function Home() {
         <Contact />
       </main>
 
-      <footer className="py-8 text-center text-sm text-muted-foreground border-t border-border/50 bg-background/50 backdrop-blur-sm md:pl-20 relative z-10">
+      <footer className="py-8 text-center text-sm text-muted-foreground border-t border-border/50 bg-background/50 backdrop-blur-sm md:pl-20">
         <p>© {new Date().getFullYear()} Prashant Rajawat. All rights reserved.</p>
         <p className="mt-1">Built with React, TailwindCSS & Framer Motion</p>
       </footer>
