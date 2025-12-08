@@ -1,14 +1,7 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useState, useRef } from "react";
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Github, ExternalLink, X } from "lucide-react";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 
 import edtechImg from "@assets/generated_images/edtech_platform_dashboard_ui.png";
 import aiImg from "@assets/generated_images/ai_voice_assistant_visualization.png";
@@ -121,6 +114,71 @@ const projects = [
   }
 ];
 
+function ProjectCard({ project, onClick }: { project: typeof projects[0]; onClick: () => void }) {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const rotateX = useTransform(y, [-100, 100], [10, -10]);
+  const rotateY = useTransform(x, [-100, 100], [-10, 10]);
+
+  function handleMouseMove(event: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = event.clientX - rect.left;
+    const mouseY = event.clientY - rect.top;
+    const xPct = mouseX / width - 0.5;
+    const yPct = mouseY / height - 0.5;
+    x.set(xPct * 200);
+    y.set(yPct * 200);
+  }
+
+  function handleMouseLeave() {
+    x.set(0);
+    y.set(0);
+  }
+
+  return (
+    <motion.div
+      onClick={onClick}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        rotateX,
+        rotateY,
+        transformStyle: "preserve-3d",
+      }}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      className="group cursor-pointer rounded-xl border border-border bg-card relative perspective-1000"
+    >
+        <div style={{ transform: "translateZ(50px)" }} className="relative aspect-video overflow-hidden rounded-t-xl">
+            <img
+                src={project.image}
+                alt={project.title}
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+            />
+            <div className="absolute inset-0 bg-black/50 opacity-0 transition-opacity group-hover:opacity-100 flex items-center justify-center">
+                <span className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-black">
+                View Details
+                </span>
+            </div>
+        </div>
+        
+        <div style={{ transform: "translateZ(20px)" }} className="p-6 bg-card rounded-b-xl border-t border-border/10">
+            <div className="mb-2 text-xs font-medium text-primary uppercase tracking-wider">
+                {project.category}
+            </div>
+            <h3 className="mb-2 text-xl font-bold text-white">{project.title}</h3>
+            <p className="line-clamp-2 text-sm text-muted-foreground">
+                {project.desc}
+            </p>
+        </div>
+    </motion.div>
+  );
+}
+
 export function Projects() {
   const [selectedProject, setSelectedProject] = useState<typeof projects[0] | null>(null);
 
@@ -142,38 +200,8 @@ export function Projects() {
         </motion.div>
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project, index) => (
-            <motion.div
-              key={project.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              onClick={() => setSelectedProject(project)}
-              className="group cursor-pointer overflow-hidden rounded-xl border border-border bg-card transition-all hover:-translate-y-2 hover:border-primary/50 hover:shadow-xl"
-            >
-              <div className="relative aspect-video overflow-hidden">
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-black/50 opacity-0 transition-opacity group-hover:opacity-100 flex items-center justify-center">
-                  <span className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-black">
-                    View Details
-                  </span>
-                </div>
-              </div>
-              <div className="p-6">
-                <div className="mb-2 text-xs font-medium text-primary uppercase tracking-wider">
-                  {project.category}
-                </div>
-                <h3 className="mb-2 text-xl font-bold text-white">{project.title}</h3>
-                <p className="line-clamp-2 text-sm text-muted-foreground">
-                  {project.desc}
-                </p>
-              </div>
-            </motion.div>
+          {projects.map((project) => (
+            <ProjectCard key={project.id} project={project} onClick={() => setSelectedProject(project)} />
           ))}
         </div>
 
