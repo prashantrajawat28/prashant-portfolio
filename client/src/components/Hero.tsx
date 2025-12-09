@@ -1,6 +1,6 @@
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { ArrowDown, Github, Linkedin, Mail, Download, Briefcase } from "lucide-react";
-import profilePhoto from "@assets/generated_images/professional_profile_photo_of_a_software_engineer.png";
+import profilePhoto from "@assets/generated_images/profile-photo.png";
 import { useRef } from "react";
 
 function TypewriterText({ text }: { text: string }) {
@@ -148,19 +148,34 @@ export function Hero() {
           <div className="mb-8 text-lg leading-relaxed text-muted-foreground md:text-xl">
              <TypewriterText text="Full Stack & AI Engineer building scalable web apps and real-time AI automation." />
             <span className="mt-2 block text-sm font-semibold text-primary/80">
-              React • Node/Express • FastAPI • PostgreSQL • Twilio • LLMs
+              FastAPI • PostgreSQL • React • Node/Express • Twilio • LLMs
             </span>
           </div>
 
           <div className="flex flex-wrap gap-4">
-            <MagneticLink
-              href="/assets/PrashantRajawat_resume.pdf"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-primary px-6 py-3 text-sm font-semibold text-primary transition-all hover:bg-primary hover:text-background hover:shadow-[0_0_20px_rgba(34,197,94,0.4)]"
-            >
-              Resume <Download className="h-4 w-4" />
-            </MagneticLink>
+            <MagneticButton
+  onClick={() => {
+    const url = "/PrashantRajawat_resume.pdf";
+
+    // open in new tab
+    window.open(url, "_blank", "noopener,noreferrer");
+
+    // download (best-effort)
+    setTimeout(() => {
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "Prashant_Rajawat_Resume.pdf";
+      a.rel = "noreferrer";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }, 150);
+  }}
+  className="inline-flex items-center gap-2 rounded-full border border-primary px-6 py-3 text-sm font-semibold text-primary transition-all hover:bg-primary hover:text-background hover:shadow-[0_0_20px_rgba(34,197,94,0.4)]"
+>
+  Resume <Download className="h-4 w-4" />
+</MagneticButton>
+
             <MagneticButton
               onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
               className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-background transition-all hover:bg-primary/90 hover:shadow-[0_0_20px_rgba(34,197,94,0.4)]"
@@ -169,15 +184,24 @@ export function Hero() {
             </MagneticButton>
             
             <div className="flex items-center gap-4 pl-4">
-              <a href="https://linkedin.com" className="text-muted-foreground transition-colors hover:text-primary hover:scale-110 transform duration-200">
+              <a href="https://www.linkedin.com/in/prashant-rajawat-096346275/" className="text-muted-foreground transition-colors hover:text-primary hover:scale-110 transform duration-200">
                 <Linkedin className="h-6 w-6" />
               </a>
-              <a href="https://github.com" className="text-muted-foreground transition-colors hover:text-primary hover:scale-110 transform duration-200">
+              <a href="https://github.com/prashantrajawat28" className="text-muted-foreground transition-colors hover:text-primary hover:scale-110 transform duration-200">
                 <Github className="h-6 w-6" />
               </a>
-              <a href="mailto:email@example.com" className="text-muted-foreground transition-colors hover:text-primary hover:scale-110 transform duration-200">
-                <Mail className="h-6 w-6" />
-              </a>
+             <a
+                href={
+                     /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
+                    ? "mailto:prashantrajawat1628@gmail.com"
+                    : "https://mail.google.com/mail/?view=cm&fs=1&to=prashantrajawat1628@gmail.com"
+  }
+                target={/Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ? "_self" : "_blank"}
+                 rel="noreferrer"
+               className="text-muted-foreground transition-colors hover:text-primary hover:scale-110 transform duration-200"
+>
+  <Mail className="h-6 w-6" />
+</a>
             </div>
           </div>
         </motion.div>

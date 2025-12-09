@@ -1,120 +1,173 @@
-import { useState, useRef } from "react";
-import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { useEffect, useState } from "react";
+import {
+  motion,
+  useMotionValue,
+  useTransform,
+} from "framer-motion";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Github, ExternalLink, X } from "lucide-react";
+import { Github, ExternalLink, X, ChevronLeft, ChevronRight } from "lucide-react";
 
-import edtechImg from "@assets/generated_images/edtech_platform_dashboard_ui.png";
-import aiImg from "@assets/generated_images/ai_voice_assistant_visualization.png";
-import travelImg from "@assets/generated_images/travel_website_landing_page_ui.png";
-import spotifyImg from "@assets/generated_images/music_streaming_app_ui.png";
-import netflixImg from "@assets/generated_images/movie_streaming_landing_page_ui.png";
+// ✅ Your project images (from your screenshot folder)
+import p1_1 from "@assets/generated_images/project-1.png";
+import p1_2 from "@assets/generated_images/project-1(2).png";
+import p1_3 from "@assets/generated_images/project-1(3).png";
+import p1_4 from "@assets/generated_images/project-1(4).png";
+import p1_5 from "@assets/generated_images/project-1(5).png";
 
-// Placeholder for project 2 since we don't have a specific image
-const webDevImg = edtechImg; 
+import p2_1 from "@assets/generated_images/project-2.png";
+import p2_2 from "@assets/generated_images/project-2(2).png";
+import p2_3 from "@assets/generated_images/project-2(3).png";
 
-const projects = [
+import smart_1 from "@assets/generated_images/smartreg-1.jpeg";
+import smart_2 from "@assets/generated_images/smartreg-2.jpeg";
+import smart_3 from "@assets/generated_images/smartreg-3.jpeg";
+
+import travel_1 from "@assets/generated_images/ui-travel-1.png";
+import spotify_1 from "@assets/generated_images/ui-spotify-1.png";
+import netflix_1 from "@assets/generated_images/ui-netflix-1.png";
+import netflix_2 from "@assets/generated_images/ui-netflix-2.png";
+
+// ✅ If you add these later, then uncomment + add to images array
+// import travel_2 from "@assets/generated_images/ui-travel-2.png";
+// import netflix_1 from "@assets/generated_images/ui-netflix-1.png";
+
+type Project = {
+  id: string;
+  title: string;
+  images: string[];
+  category: string;
+  desc: string;
+  features: string[];
+  github: string;
+  live: string;
+  stack: string[];
+};
+
+const projects: Project[] = [
   {
     id: "project1",
-    title: "StudyNotion - Edtech Platform",
-    image: edtechImg,
+    title: "StudyNotion-Edtech Platform",
+    images: [p1_1, p1_2, p1_3, p1_4, p1_5],
     category: "Full Stack",
-    desc: "A comprehensive EdTech platform for students and instructors with secure auth, payments, and content management.",
+    desc:
+      "StudyNotion is a full-stack EdTech platform where students can buy and learn courses while instructors can create and manage educational content. It includes secure user authentication, real-time payments, role-based dashboards, and a scalable backend powered by Node.js, Express, and MongoDB.",
     features: [
-      "Role-based access (Student/Instructor/Admin)",
-      "Course creation and purchase workflow",
-      "Razorpay payment integration",
-      "Real-time progress tracking",
-      "Secure API with Node.js & Express"
+      "User authentication with JWT and role-based access (student/instructor/admin)",
+      "Course creation, management, and structured content delivery",
+      "Razorpay payment integration with real-time order tracking",
+      "Dynamic dashboards for students and instructors",
+      "Progress tracking for enrolled courses",
+      "Responsive UI built with React & TailwindCSS",
+      "Optimized backend with caching and efficient MongoDB queries",
+      "Secure API design for payments, user data, and content management",
     ],
-    github: "https://github.com",
-    live: "https://vercel.com",
-    stack: ["React", "Node.js", "MongoDB", "Express", "Tailwind"]
+    github: "https://github.com/YOUR_USERNAME/YOUR_REPO",
+    live: "https://studynotion-frontend-iota-three.vercel.app/",
+    stack: ["React", "Node.js", "MongoDB", "Express", "Tailwind"],
   },
   {
     id: "project2",
-    title: "Express CRUD API System",
-    image: webDevImg,
+    title: "Web Development / Backend API & CRUD Operations",
+    images: [p2_1, p2_2, p2_3],
     category: "Backend",
-    desc: "Robust RESTful API system demonstrating advanced CRUD operations, validation, and database interactions.",
+    desc:
+      "This project is a simple yet structured CRUD web application built using Express.js to demonstrate RESTful API design, data management, and interaction between backend routes and a dynamic frontend interface.",
     features: [
-      "Complete CRUD operations",
-      "RESTful architecture patterns",
-      "Server-side validation with Zod",
-      "Optimized database queries",
-      "Clean modular code structure"
+      "CRUD operations (Create, Read, Update, Delete) with Express.js",
+      "RESTful API architecture with structured routes",
+      "Server-side data handling and validation",
+      "Dynamic frontend integrated with backend APIs",
+      "Lightweight UI using HTML & CSS",
+      "Modular, clean folder structure for scalability",
     ],
-    github: "https://github.com",
-    live: "https://render.com",
-    stack: ["Node.js", "Express", "PostgreSQL"]
+    github: "https://github.com/YOUR_USERNAME/YOUR_REPO",
+    live: "https://express-crud-hj5j.onrender.com/posts",
+    stack: ["Node.js", "Express", "PostgreSQL"],
   },
   {
     id: "project3",
-    title: "SmartCallReg - AI Voice Assistant",
-    image: aiImg,
+    title: "SmartCallReg",
+    images: [smart_2, smart_1, smart_3],
     category: "AI & Automation",
-    desc: "Real-time AI voice assistant capable of natural conversations using STT, LLMs, and TTS pipelines.",
+    desc:
+      "This project is a real-time AI voice assistant built using Twilio, FastAPI, and WebSockets, enabling users to interact through natural voice conversations.",
     features: [
-      "Real-time Twilio Voice integration",
-      "Speech-to-Text & Text-to-Speech pipeline",
-      "LLM dynamic response generation",
-      "WebSocket bi-directional streaming",
-      "Automated workflow handling"
+      "Real-time voice interaction using Twilio",
+      "Speech-to-Text (STT) for understanding user queries",
+      "LLM-based dynamic response generation",
+      "Text-to-Speech (TTS) for natural voice replies",
+      "WebSocket-based bi-directional communication",
+      "Automated voice workflow (e.g., test booking)",
+      "Built using FastAPI for fast, scalable backend",
     ],
-    github: "https://github.com",
-    live: "#",
-    stack: ["FastAPI", "Python", "Twilio", "OpenAI", "WebSockets"]
+    github: "https://github.com/prashantrajawat28",
+    live: "https://YOUR-LIVE-LINK.com",
+    stack: ["FastAPI", "Python", "Twilio", "WebSockets"],
   },
   {
     id: "project4",
-    title: "Travel Landing UI",
-    image: travelImg,
+    title: "Travel Landing Page UI (Design Showcase)",
+    images: [travel_1 /*, travel_2 */],
     category: "Design",
-    desc: "Modern, high-fidelity landing page for a travel agency focusing on visual hierarchy and typography.",
+    desc:
+      "A modern travel landing page UI built as a design showcase. Focused on clean hero layout, strong typography, CTA placement, and responsive spacing. (UI Preview — Not Hosted)",
     features: [
-      "Glassmorphism design elements",
-      "Responsive hero layout",
-      "Interactive card hover states",
-      "Clean typographic scale"
+      "Full-screen hero section with strong typography and CTA",
+      "Clean navbar and section layout structure",
+      "Featured content card UI ('best places to visit')",
+      "Responsive layout for desktop/tablet/mobile",
+      "Consistent spacing, alignment, and visual hierarchy",
+      "Smooth hover + modern glass UI styling",
     ],
-    github: "#",
-    live: "#",
-    stack: ["React", "TailwindCSS", "Framer Motion"]
+    github: "",
+    live: "",
+    stack: ["UI/UX", "HTML/CSS"],
   },
   {
     id: "project5",
-    title: "Spotify Clone UI",
-    image: spotifyImg,
+    title: "Spotify Web Player UI Clone (Design Showcase)",
+    images: [spotify_1],
     category: "Design",
-    desc: "Pixel-perfect clone of the Spotify web player interface with complex grid layouts and custom scrollbars.",
+    desc:
+      "A Spotify-inspired web player dashboard UI clone. Built to practice layout systems, sidebar navigation, card grids, and dark theme consistency. (UI Preview — Not Hosted)",
     features: [
-      "Complex grid layouts",
-      "Custom audio player UI controls",
-      "Sidebar navigation system",
-      "Dark mode color palette"
+      "Sidebar navigation layout (Home / Search / Library)",
+      "Trending & Featured sections with card grid UI",
+      "Dark theme styling with consistent contrast",
+      "Hover states and polished spacing system",
+      "Responsive dashboard layout structure",
     ],
-    github: "#",
-    live: "#",
-    stack: ["React", "CSS Modules"]
+    github: "",
+    live: "",
+    stack: ["UI/UX", "HTML/CSS"],
   },
   {
     id: "project6",
-    title: "Netflix Clone UI",
-    image: netflixImg,
+    title: "Netflix Landing Page UI Clone (Design Showcase)",
+    images: [netflix_1 ,netflix_2  ],
     category: "Design",
-    desc: "Responsive landing page clone of Netflix featuring hero banners and content rows.",
+    desc:
+      "A Netflix-inspired landing page UI clone featuring hero banner, email CTA, and feature section layout. Built to practice modern responsive sections and typography. (UI Preview — Not Hosted)",
     features: [
-      "Hero video background support",
-      "Horizontal content scrolling",
-      "Email capture form UI",
-      "Responsive accordion FAQ"
+      "Hero banner + email capture CTA UI",
+      "Feature sections (TV / Download / Watch anywhere layout)",
+      "Dark theme with strong typography hierarchy",
+      "Responsive section spacing and grid alignment",
+      "Button and header styling inspired by Netflix UI",
     ],
-    github: "#",
-    live: "#",
-    stack: ["React", "TailwindCSS"]
-  }
+    github: "",
+    live: "",
+    stack: ["UI/UX", "HTML/CSS"],
+  },
 ];
 
-function ProjectCard({ project, onClick }: { project: typeof projects[0]; onClick: () => void }) {
+function ProjectCard({
+  project,
+  onClick,
+}: {
+  project: Project;
+  onClick: () => void;
+}) {
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
@@ -143,44 +196,64 @@ function ProjectCard({ project, onClick }: { project: typeof projects[0]; onClic
       onClick={onClick}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      style={{
-        rotateX,
-        rotateY,
-        transformStyle: "preserve-3d",
-      }}
+      style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       className="group cursor-pointer rounded-xl border border-border bg-card relative perspective-1000"
     >
-        <div style={{ transform: "translateZ(50px)" }} className="relative aspect-video overflow-hidden rounded-t-xl">
-            <img
-                src={project.image}
-                alt={project.title}
-                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-            />
-            <div className="absolute inset-0 bg-black/50 opacity-0 transition-opacity group-hover:opacity-100 flex items-center justify-center">
-                <span className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-black">
-                View Details
-                </span>
-            </div>
+      <div
+        style={{ transform: "translateZ(50px)" }}
+        className="relative aspect-video overflow-hidden rounded-t-xl"
+      >
+        <img
+          src={project.images[0]}
+          alt={project.title}
+          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+        />
+        <div className="absolute inset-0 bg-black/50 opacity-0 transition-opacity group-hover:opacity-100 flex items-center justify-center">
+          <span className="rounded-full bg-primary px-4 py-2 text-sm font-semibold text-black">
+            View Details
+          </span>
         </div>
-        
-        <div style={{ transform: "translateZ(20px)" }} className="p-6 bg-card rounded-b-xl border-t border-border/10">
-            <div className="mb-2 text-xs font-medium text-primary uppercase tracking-wider">
-                {project.category}
-            </div>
-            <h3 className="mb-2 text-xl font-bold text-white">{project.title}</h3>
-            <p className="line-clamp-2 text-sm text-muted-foreground">
-                {project.desc}
-            </p>
+      </div>
+
+      <div
+        style={{ transform: "translateZ(20px)" }}
+        className="p-6 bg-card rounded-b-xl border-t border-border/10"
+      >
+        <div className="mb-2 text-xs font-medium text-primary uppercase tracking-wider">
+          {project.category}
         </div>
+        <h3 className="mb-2 text-xl font-bold text-white">{project.title}</h3>
+        <p className="line-clamp-2 text-sm text-muted-foreground">
+          {project.desc}
+        </p>
+      </div>
     </motion.div>
   );
 }
 
 export function Projects() {
-  const [selectedProject, setSelectedProject] = useState<typeof projects[0] | null>(null);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [activeImg, setActiveImg] = useState(0);
+
+  useEffect(() => {
+    setActiveImg(0);
+  }, [selectedProject?.id]);
+
+  const images = selectedProject?.images ?? [];
+  const total = images.length;
+
+  const prev = () => {
+    if (!total) return;
+    setActiveImg((i) => (i - 1 + total) % total);
+  };
+
+  const next = () => {
+    if (!total) return;
+    setActiveImg((i) => (i + 1) % total);
+  };
 
   return (
     <section id="projects" className="px-6 py-24 md:pl-20">
@@ -201,7 +274,11 @@ export function Projects() {
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {projects.map((project) => (
-            <ProjectCard key={project.id} project={project} onClick={() => setSelectedProject(project)} />
+            <ProjectCard
+              key={project.id}
+              project={project}
+              onClick={() => setSelectedProject(project)}
+            />
           ))}
         </div>
 
@@ -209,32 +286,78 @@ export function Projects() {
           <DialogContent className="max-w-3xl border-border bg-card p-0 overflow-hidden text-foreground">
             {selectedProject && (
               <div className="flex flex-col max-h-[90vh] overflow-y-auto">
+                {/* ✅ Slider */}
                 <div className="relative aspect-video w-full bg-muted">
-                  <img 
-                    src={selectedProject.image} 
+                  <img
+                    src={images[activeImg]}
                     alt={selectedProject.title}
                     className="h-full w-full object-cover"
                   />
-                  <button 
+
+                  {/* close */}
+                  <button
                     onClick={() => setSelectedProject(null)}
                     className="absolute right-4 top-4 rounded-full bg-black/50 p-2 text-white hover:bg-black/70"
                   >
                     <X className="h-4 w-4" />
                   </button>
+
+                  {/* arrows only if multiple images */}
+                  {total > 1 && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={prev}
+                        className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white hover:bg-black/70"
+                        aria-label="Previous image"
+                      >
+                        <ChevronLeft className="h-5 w-5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={next}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white hover:bg-black/70"
+                        aria-label="Next image"
+                      >
+                        <ChevronRight className="h-5 w-5" />
+                      </button>
+
+                      {/* dots */}
+                      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
+                        {images.map((_, i) => (
+                          <button
+                            key={i}
+                            type="button"
+                            onClick={() => setActiveImg(i)}
+                            className={`h-2.5 w-2.5 rounded-full ${
+                              i === activeImg ? "bg-primary" : "bg-white/40"
+                            }`}
+                            aria-label={`Go to image ${i + 1}`}
+                          />
+                        ))}
+                      </div>
+                    </>
+                  )}
                 </div>
-                
+
                 <div className="p-6 md:p-8">
                   <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
                     <div>
-                      <h2 className="text-2xl font-bold text-white">{selectedProject.title}</h2>
+                      <h2 className="text-2xl font-bold text-white">
+                        {selectedProject.title}
+                      </h2>
                       <div className="mt-2 flex flex-wrap gap-2">
                         {selectedProject.stack.map((tech) => (
-                          <span key={tech} className="rounded-md bg-secondary px-2 py-1 text-xs text-secondary-foreground">
+                          <span
+                            key={tech}
+                            className="rounded-md bg-secondary px-2 py-1 text-xs text-secondary-foreground"
+                          >
                             {tech}
                           </span>
                         ))}
                       </div>
                     </div>
+
                     <div className="flex gap-3">
                       {selectedProject.github && selectedProject.github !== "#" && (
                         <a

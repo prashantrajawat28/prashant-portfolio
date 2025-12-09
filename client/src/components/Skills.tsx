@@ -5,9 +5,9 @@ export function Skills() {
     { category: "Programming", items: ["Python", "JavaScript", "TypeScript", "C++"] },
     { category: "Web & Backend", items: ["Node.js", "Express.js", "FastAPI", "REST APIs", "WebSockets"] },
     { category: "Frontend", items: ["React.js", "TailwindCSS", "HTML5", "CSS3", "Framer Motion"] },
-    { category: "Databases", items: ["PostgreSQL", "MongoDB", "Redis"] },
+    { category: "Databases", items: ["PostgreSQL", "MongoDB",] },
     { category: "AI & Automation", items: ["Twilio Voice", "OpenAI API", "LangChain", "STT/TTS", "Prompt Eng"] },
-    { category: "Tools", items: ["Git", "Docker", "Postman", "Linux", "VS Code"] },
+    { category: "Tools", items: ["Git", "Docker", "Postman"] },
   ];
 
   const container = {
